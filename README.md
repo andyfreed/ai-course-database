@@ -1,36 +1,139 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Course Database
 
-## Getting Started
+A production-ready AI-powered course management system that allows you to upload course materials (PDFs and Word documents) and exam questions, then search through them using semantic AI search.
 
-First, run the development server:
+## Features
+
+- 📚 Upload and manage course materials (PDF and DOCX files)
+- 🔍 AI-powered semantic search across all course content
+- 📝 Store and search exam questions with answers
+- 🤖 OpenAI integration for intelligent responses
+- 💾 PostgreSQL with pgvector for vector embeddings
+- ☁️ Supabase for managed database and file storage
+- ⚡ Built with Next.js 14 and TypeScript
+- 🎨 Tailwind CSS for styling
+- 🚀 Ready for Vercel deployment
+
+## Setup Instructions
+
+### 1. Create a Supabase Project
+
+1. Go to [Supabase](https://supabase.com) and create a new project
+2. Once created, go to Settings > Database
+3. Enable the pgvector extension:
+   ```sql
+   CREATE EXTENSION IF NOT EXISTS vector;
+   ```
+
+### 2. Configure Environment Variables
+
+1. Copy `.env.example` to `.env.local`
+2. Fill in your Supabase credentials from the project settings:
+   - `DATABASE_URL` - Connection string (Transaction mode)
+   - `DIRECT_URL` - Direct connection string (Session mode)
+   - `NEXT_PUBLIC_SUPABASE_URL` - Project URL
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Anon/Public key
+   - `SUPABASE_SERVICE_ROLE_KEY` - Service role key
+3. Add your OpenAI API key
+
+### 3. Set up the Database
+
+```bash
+# Install dependencies
+npm install
+
+# Generate Prisma client
+npx prisma generate
+
+# Push database schema to Supabase
+npx prisma db push
+```
+
+### 4. Create Storage Bucket
+
+In your Supabase dashboard:
+1. Go to Storage
+2. Create a new bucket called `course-documents`
+3. Set it to public if you want direct file access
+
+### 5. Run Locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deployment to Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. Push to GitHub
 
-## Learn More
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin YOUR_GITHUB_REPO_URL
+git push -u origin main
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 2. Deploy to Vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Go to [Vercel](https://vercel.com)
+2. Import your GitHub repository
+3. Add environment variables in Vercel dashboard:
+   - All variables from `.env.local`
+   - Use the Vercel environment variable names from `vercel.json`
+4. Deploy!
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Usage
 
-## Deploy on Vercel
+### Creating Courses
+1. Navigate to "Manage Courses" tab
+2. Fill in course details (title, description, version)
+3. Click "Create Course"
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Uploading Documents
+1. After creating a course, drag and drop PDF or Word files
+2. Files are automatically processed and indexed for search
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Searching
+1. Go to "Search Courses" tab
+2. Enter your query
+3. AI will search through all documents and provide relevant results
+
+### Adding Exam Questions
+Use the API endpoint `/api/courses/[courseId]/questions` to add exam questions programmatically.
+
+## API Endpoints
+
+- `GET /api/courses` - List all courses
+- `POST /api/courses` - Create a new course
+- `POST /api/courses/[courseId]/documents` - Upload document to course
+- `GET /api/courses/[courseId]/questions` - Get course questions
+- `POST /api/courses/[courseId]/questions` - Add single question
+- `PUT /api/courses/[courseId]/questions` - Bulk import questions
+- `POST /api/search` - Search across all content
+
+## Tech Stack
+
+- **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes, Prisma ORM
+- **Database**: PostgreSQL with pgvector extension (Supabase)
+- **AI**: OpenAI API, LangChain
+- **File Processing**: pdf-parse, mammoth
+- **Deployment**: Vercel
+
+## Security Notes
+
+- All API keys are stored as environment variables
+- Supabase provides row-level security (can be configured)
+- File uploads are validated for type and size
+- Service role key is only used server-side
+
+## Contributing
+
+Feel free to submit issues and pull requests!
+
+## License
+
+MIT
