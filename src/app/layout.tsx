@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "AI Course Database",
-  description: "AI-powered course management system with semantic search",
+  description: "AI-powered course management system with semantic search capabilities",
 };
 
 export default function RootLayout({
